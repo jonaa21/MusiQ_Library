@@ -25,7 +25,7 @@ public class Artist {
     @DefaultValue(value = "false")
     private boolean isFollowed;
 
-    @OneToOne(mappedBy = "artist", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToOne(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
     private ArtistInfo artistInfo;
 
     @Column(name = "artist_type", nullable = false)

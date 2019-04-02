@@ -47,8 +47,8 @@ function editInfo() {
 function saveInfo() {
     let urlParams = window.location.search.substring(1).split("=");
     let artist = JSON.parse(window.sessionStorage.getItem(urlParams[1]));
-    artist.artistInfo.info += document.getElementById("artistInfo").value;
-    apiCall('PUT', `artist/update/${artist.id}`, artist);
+    let info = document.getElementById("artistInfo").value;
+    apiCall('PUT', `artist/update/${artist.id}`, info);
 }
 
 function apiCall(method, entity, body) {

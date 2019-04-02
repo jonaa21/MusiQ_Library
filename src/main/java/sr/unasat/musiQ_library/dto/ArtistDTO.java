@@ -19,11 +19,12 @@ public class ArtistDTO {
     }
 
     public ArtistDTO(Long id, String artistName, List<AlbumDTO> album,
-                     ArtistTypeCode artistType, boolean isFollowed) {
+                     ArtistTypeCode artistType, ArtistInfoDTO artistInfo, boolean isFollowed) {
         this.id = id;
         this.artistName = artistName;
         this.album = album;
         this.artistType = artistType;
+        this.artistInfo = artistInfo;
         this.isFollowed = isFollowed;
     }
 

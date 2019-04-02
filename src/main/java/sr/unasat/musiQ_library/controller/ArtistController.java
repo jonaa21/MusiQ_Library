@@ -4,9 +4,11 @@ import org.modelmapper.ModelMapper;
 import sr.unasat.musiQ_library.config.JPAConfiguration;
 import sr.unasat.musiQ_library.dto.ArtistDTO;
 import sr.unasat.musiQ_library.entity.Artist;
+import sr.unasat.musiQ_library.entity.ArtistInfo;
 import sr.unasat.musiQ_library.entity.ArtistTypeCode;
 import sr.unasat.musiQ_library.service.ArtistService;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -48,10 +50,10 @@ public class ArtistController {
 
     @Path("/update/{artistId}")
     @PUT
-    public Response update(@PathParam("artistId") Long id, ArtistDTO artistDTO) {
+    public Response update(@PathParam("artistId") Long id, @Valid String info) {
         try {
-            artistDTO.setId(id);
             Artist artist = artistService.getArtist(id);
+            artist.setArtistInfo(new ArtistInfo(artist, info));
             artistService.update(artist);
         } catch (Exception e) {
             JPAConfiguration.getEntityManager().getTransaction().rollback();

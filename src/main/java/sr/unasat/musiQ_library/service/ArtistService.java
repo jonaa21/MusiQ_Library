@@ -1,6 +1,7 @@
 package sr.unasat.musiQ_library.service;
 
 import sr.unasat.musiQ_library.dao.ArtistDAO;
+import sr.unasat.musiQ_library.dao.ArtistInfoDAO;
 import sr.unasat.musiQ_library.entity.Artist;
 import sr.unasat.musiQ_library.entity.ArtistTypeCode;
 
@@ -11,10 +12,12 @@ import java.util.List;
 public class ArtistService {
 
     private ArtistDAO artistDAO;
+    private ArtistInfoDAO infoDAO;
     private List<Artist> artists;
 
     public ArtistService(EntityManager entityManager) {
         artistDAO = new ArtistDAO(entityManager);
+        infoDAO = new ArtistInfoDAO(entityManager);
         artists = findAll();
     }
 
@@ -35,6 +38,7 @@ public class ArtistService {
     }
 
     public Artist update(Artist artist) {
+        infoDAO.updateInfo(artist.getArtistInfo());
         Artist updateArtist = artistDAO.updateArtist(artist);
         iterate(artist, updateArtist);
         artists.add(updateArtist);

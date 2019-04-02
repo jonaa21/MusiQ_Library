@@ -2,6 +2,7 @@ package sr.unasat.musiQ_library.controller;
 
 import org.modelmapper.ModelMapper;
 import sr.unasat.musiQ_library.config.JPAConfiguration;
+import sr.unasat.musiQ_library.designPatterns.states.AlbumContext;
 import sr.unasat.musiQ_library.dto.AlbumDTO;
 import sr.unasat.musiQ_library.dto.ArtistDTO;
 import sr.unasat.musiQ_library.dto.SongDTO;
@@ -30,6 +31,9 @@ public class AlbumController {
         AlbumDTO albumDTO;
         List<Album> albums = albumService.findAll();
         for (Album album : albums) {
+            AlbumContext context = new AlbumContext();
+            context.setDecade(album);
+            context.getDecade(album);
             List<SongDTO> songDTOS = new ArrayList<>();
             ArtistDTO artistDTO = modelMapper.map(album.getArtist(), ArtistDTO.class);
             if (album.getSongList() != null) {
@@ -49,6 +53,11 @@ public class AlbumController {
         try {
             Album album = modelMapper.map(albumDTO, Album.class);
             albumService.add(album);
+
+            AlbumContext albumContext = new AlbumContext();
+            albumContext.setDecade(album);
+            // Check in which decade the album belongs to
+            System.out.println(albumContext.getDecade(album));
         } catch (Exception e) {
             JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
