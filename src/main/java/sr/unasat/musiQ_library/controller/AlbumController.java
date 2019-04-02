@@ -8,6 +8,7 @@ import sr.unasat.musiQ_library.dto.SongDTO;
 import sr.unasat.musiQ_library.entity.Album;
 import sr.unasat.musiQ_library.entity.Song;
 import sr.unasat.musiQ_library.service.AlbumService;
+import sr.unasat.musiQ_library.states.AlbumContext;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -49,6 +50,13 @@ public class AlbumController {
         try {
             Album album = modelMapper.map(albumDTO, Album.class);
             albumService.add(album);
+
+            // State pattern
+            AlbumContext albumContext = new AlbumContext();
+            albumContext.setDecade(album);
+            // Check in which decade the album belongs to
+            System.out.println(albumContext.getDecade(album));
+
         } catch (Exception e) {
             JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
