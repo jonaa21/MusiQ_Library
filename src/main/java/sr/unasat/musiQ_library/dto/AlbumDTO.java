@@ -1,24 +1,32 @@
 package sr.unasat.musiQ_library.dto;
 
-import sr.unasat.musiQ_library.designPatterns.decorator.AlbumDecorator;
-import sr.unasat.musiQ_library.entity.Artist;
+import sr.unasat.musiQ_library.designPatterns.decorator.Decorator;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AlbumDTO extends AlbumDecorator {
+public class AlbumDTO extends Decorator {
     private Long id;
     @NotNull
     private String albumTitle;
     @Max(4)
     private int releaseYear;
     @NotNull
-    private Artist artist;
+    private ArtistDTO artist;
+    private Decorator decorator = new Decorator();
+    private List<SongDTO> songList = new ArrayList<>();
 
     public AlbumDTO() {
+        super();
     }
 
-    public AlbumDTO(String albumTitle, Artist artist, int releaseYear) {
+    public AlbumDTO(ArtistDTO artistDTO, List<SongDTO> songDTOS) {
+        super(artistDTO, songDTOS);
+    }
+
+    public AlbumDTO(String albumTitle, ArtistDTO artist, int releaseYear) {
         this.albumTitle = albumTitle;
         this.artist = artist;
         this.releaseYear = releaseYear;
@@ -53,11 +61,21 @@ public class AlbumDTO extends AlbumDecorator {
         this.releaseYear = releaseYear;
     }
 
-    public String getArtist() {
-        return artist.getArtistName();
+    public ArtistDTO getArtist() {
+        return artist = decorator.getArtist();
+//        return artist;
     }
 
-    public void setArtist(Artist artist) {
-        this.artist = artist;
+    public void setArtist(ArtistDTO artist) {
+        decorator.setArtist(artist);
+    }
+
+    public List<String> getSongList() {
+        return decorator.getSongList();
+    }
+
+    public void setSongList(List<SongDTO> songList) {
+        decorator.setSongList(songList);
+//        this.songList = songList;
     }
 }

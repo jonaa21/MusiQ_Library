@@ -4,8 +4,11 @@ import org.modelmapper.ModelMapper;
 import sr.unasat.musiQ_library.config.JPAConfiguration;
 import sr.unasat.musiQ_library.dto.ArtistDTO;
 import sr.unasat.musiQ_library.entity.Artist;
+import sr.unasat.musiQ_library.entity.ArtistInfo;
+import sr.unasat.musiQ_library.entity.ArtistTypeCode;
 import sr.unasat.musiQ_library.service.ArtistService;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,19 +42,21 @@ public class ArtistController {
             Artist artist = modelMapper.map(artistDTO, Artist.class);
             artistService.add(artist);
         } catch (Exception e) {
+            JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         return Response.ok().build();
     }
 
-    @Path("/{artistId}")
+    @Path("/update/{artistId}")
     @PUT
-    public Response update(@PathParam("artistId") Long id, ArtistDTO artistDTO) {
+    public Response update(@PathParam("artistId") Long id, @Valid String info) {
         try {
-            artistDTO.setId(id);
-            Artist artist = modelMapper.map(artistDTO, Artist.class);
+            Artist artist = artistService.getArtist(id);
+            artist.setArtistInfo(new ArtistInfo(artist, info));
             artistService.update(artist);
         } catch (Exception e) {
+            JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         return Response.ok().build();
@@ -63,6 +68,7 @@ public class ArtistController {
         try {
             artistService.delete(id);
         } catch (Exception e) {
+//            JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         return Response.ok().build();
@@ -75,9 +81,17 @@ public class ArtistController {
         try {
             artistDTO = modelMapper.map(artistService.getArtist(id), ArtistDTO.class);
         } catch (Exception e) {
+            JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         return Response.ok(artistDTO).build();
     }
 
+
+    @Path("/types")
+    @GET
+    public Response getTypes() {
+        List<ArtistTypeCode> types = artistService.getTypes();
+        return Response.ok(types).build();
+    }
 }

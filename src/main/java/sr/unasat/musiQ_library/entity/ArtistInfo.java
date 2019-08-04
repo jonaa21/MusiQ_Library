@@ -26,6 +26,10 @@ public class ArtistInfo {
         this.info = info;
     }
 
+    public ArtistInfo(String info) {
+        this.info = info;
+    }
+
     public Long getId() {
         return id;
     }

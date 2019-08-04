@@ -82,5 +82,7 @@
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.13" level="project" />
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.modelmapper:modelmapper:2.3.0" level="project" />
+    <orderEntry type="library" name="Maven: com.thetransactioncompany:cors-filter:2.6" level="project" />
+    <orderEntry type="library" name="Maven: com.thetransactioncompany:java-property-utils:1.9.1" level="project" />
   </component>
 </module>

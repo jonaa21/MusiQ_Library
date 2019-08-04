@@ -23,7 +23,7 @@ public class AlbumService {
     }
 
     public List<Album> findAll() {
-        return albumDAO.findAllAlbums();
+        return albumDAO.findAllAlbumsByAsc();
     }
 
     public Album add(Album album) {

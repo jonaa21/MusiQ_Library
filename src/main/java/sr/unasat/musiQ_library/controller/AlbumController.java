@@ -2,7 +2,9 @@ package sr.unasat.musiQ_library.controller;
 
 import org.modelmapper.ModelMapper;
 import sr.unasat.musiQ_library.config.JPAConfiguration;
+import sr.unasat.musiQ_library.designPatterns.states.AlbumContext;
 import sr.unasat.musiQ_library.dto.AlbumDTO;
+import sr.unasat.musiQ_library.dto.ArtistDTO;
 import sr.unasat.musiQ_library.dto.SongDTO;
 import sr.unasat.musiQ_library.entity.Album;
 import sr.unasat.musiQ_library.entity.Song;
@@ -25,14 +27,24 @@ public class AlbumController {
     @Path("/list")
     @GET
     public Response findAll() {
-        List<AlbumDTO> albumAlbumDTOS = new ArrayList<>();
+        List<AlbumDTO> albumDTOS = new ArrayList<>();
         AlbumDTO albumDTO;
         List<Album> albums = albumService.findAll();
         for (Album album : albums) {
+            AlbumContext context = new AlbumContext();
+            context.setDecade(album);
+            context.getDecade(album);
+            List<SongDTO> songDTOS = new ArrayList<>();
+            ArtistDTO artistDTO = modelMapper.map(album.getArtist(), ArtistDTO.class);
+            if (album.getSongList() != null) {
+                album.getSongList().forEach(song -> songDTOS.add(modelMapper.map(song, SongDTO.class)));
+            }
             albumDTO = modelMapper.map(album, AlbumDTO.class);
-            albumAlbumDTOS.add(albumDTO);
+            albumDTO.setArtist(artistDTO);
+            albumDTO.setSongList(songDTOS);
+            albumDTOS.add(albumDTO);
         }
-        return Response.ok(albumAlbumDTOS).build();
+        return Response.ok(albumDTOS).build();
     }
 
     @Path("/add")
@@ -41,7 +53,13 @@ public class AlbumController {
         try {
             Album album = modelMapper.map(albumDTO, Album.class);
             albumService.add(album);
+
+            AlbumContext albumContext = new AlbumContext();
+            albumContext.setDecade(album);
+            // Check in which decade the album belongs to
+            System.out.println(albumContext.getDecade(album));
         } catch (Exception e) {
+            JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         return Response.ok().build();
@@ -55,6 +73,7 @@ public class AlbumController {
             Album album = modelMapper.map(albumDTO, Album.class);
             albumService.update(album);
         } catch (Exception e) {
+            JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         return Response.ok().build();
@@ -66,6 +85,7 @@ public class AlbumController {
         try {
             albumService.delete(id);
         } catch (Exception e) {
+            JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         return Response.ok().build();
@@ -78,6 +98,7 @@ public class AlbumController {
         try {
             albumDTO = modelMapper.map(albumService.getAlbum(id), AlbumDTO.class);
         } catch (Exception e) {
+            JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         return Response.ok(albumDTO).build();
@@ -87,11 +108,7 @@ public class AlbumController {
     @GET
     public List<String> getSongsFromAlbum(@PathParam("albumId") Long albumId) {
         AlbumDTO albumDTO = modelMapper.map(albumService.getAlbum(albumId), AlbumDTO.class);
-        List<String> titles = new ArrayList<>();
-        for (String song : albumDTO.getSongList()) {
-            titles.add(song);
-        }
-        return titles;
+        return albumDTO.getSongList();
     }
 
     @Path("/add/{albumId}/songs")
@@ -106,6 +123,7 @@ public class AlbumController {
             }
             albumService.addSongsToAlbum(album, albumSongs);
         } catch (Exception e) {
+            JPAConfiguration.getEntityManager().getTransaction().rollback();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         return Response.ok().build();

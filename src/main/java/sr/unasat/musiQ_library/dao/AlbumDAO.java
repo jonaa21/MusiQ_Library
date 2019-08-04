@@ -8,6 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+import static sr.unasat.musiQ_library.utlis.Constants.ENTITY_EXISTS_MSG;
+
 public class AlbumDAO {
 
     private EntityManager entityManager;
@@ -15,12 +17,12 @@ public class AlbumDAO {
 
     public AlbumDAO(EntityManager entityManager) {
         this.entityManager = entityManager;
-        albums = findAllAlbums();
+        albums = findAllAlbumsByAsc();
     }
 
-    public List<Album> findAllAlbums() {
+    public List<Album> findAllAlbumsByAsc() {
         entityManager.getTransaction().begin();
-        String jpql = "select a from Album a";
+        String jpql = "select a from Album a ORDER BY a.albumTitle ASC";
         TypedQuery<Album> query = entityManager.createQuery(jpql, Album.class);
         albums = query.getResultList();
         entityManager.getTransaction().commit();
@@ -33,7 +35,7 @@ public class AlbumDAO {
             if (albums.get(i).getAlbumTitle().toLowerCase().trim().equals(
                     album.getAlbumTitle().toLowerCase().trim())) {
                 entityManager.getTransaction().rollback();
-                throw new EntityExistsException();
+                throw new EntityExistsException(ENTITY_EXISTS_MSG);
             }
         }
         entityManager.persist(album);
@@ -57,7 +59,7 @@ public class AlbumDAO {
             List<Song> songs = album.getSongList();
             for (int i = 0; i < songs.size(); i++) {
                 String songTitle = songs.get(i).getTitle();
-                songs.add(new Song(songTitle, album.getReleaseYear(), album, false));
+                songs.add(new Song(songTitle, album));
             }
             album.setSongList(songs);
         }

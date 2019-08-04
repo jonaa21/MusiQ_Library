@@ -1,11 +1,3 @@
-**TODO**
+Add extension to bypass CORS policy:
 
-Composite -> Artist related info 
-
-State -> Artist type
-
-Playlist component needs to be created
-
-Front end
-
-Artist info table (Nice to have)
+https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi 

@@ -1,6 +1,6 @@
 package sr.unasat.musiQ_library.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import javax.ws.rs.DefaultValue;
@@ -17,28 +17,26 @@ public class Artist {
     @Column(name = "artist_name", nullable = false, unique = true)
     private String artistName;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "artist", fetch = FetchType.LAZY)
+    @JsonBackReference(value = "albumArtist")
+    @OneToMany(mappedBy = "artist", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Album> album;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "artist_type", nullable = false)
-    private ArtistTypeCode artistType;
 
     @Column(name = "is_followed")
     @DefaultValue(value = "false")
     private boolean isFollowed;
 
-    @OneToOne(mappedBy = "artist", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
     private ArtistInfo artistInfo;
+
+    @Column(name = "artist_type", nullable = false)
+    private String artistType;
 
     public Artist() {
     }
 
-    public Artist(String artistName, ArtistTypeCode artistType, boolean isFollowed) {
+    public Artist(String artistName, String artistType) {
         this.artistName = artistName;
         this.artistType = artistType;
-        this.isFollowed = isFollowed;
     }
 
     public Long getId() {
@@ -57,11 +55,11 @@ public class Artist {
         this.artistName = name;
     }
 
-    public ArtistTypeCode getArtistType() {
+    public String getArtistType() {
         return artistType;
     }
 
-    public void setArtistType(ArtistTypeCode artistType) {
+    public void setArtistType(String artistType) {
         this.artistType = artistType;
     }
 

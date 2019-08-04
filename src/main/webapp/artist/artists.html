@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MusiQ Library</title>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+</head>
+<body background="../images/music-artist.jpg" class="img-fluid" style="background-size: 100%">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2">
+            <button class="btn btn-outline-secondary" style="margin: 10px" type="button">
+                <a href="../index.html"><i class="fas fa-home"> </i></a>
+            </button>
+        </div>
+        <div>
+            <h4>Artists</h4>
+            <table class="table table-light table-responsive table-hover table-bordered"
+                   style="background-color: rgba(225, 225, 225, 0.8); margin-left: 15%;">
+                <thead>
+                <tr>
+                    <td>Artist</td>
+                    <td>Action</td>
+                </tr>
+                </thead>
+                <tbody id="artistTable">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="artists-controller.js"></script>
+</body>
+</html>

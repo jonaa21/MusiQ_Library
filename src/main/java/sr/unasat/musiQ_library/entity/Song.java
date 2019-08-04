@@ -1,5 +1,7 @@
 package sr.unasat.musiQ_library.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import javax.ws.rs.DefaultValue;
 
@@ -18,6 +20,7 @@ public class Song {
     private int releaseYear;
 
     @ManyToOne
+    @JsonBackReference(value = "albumSong")
     @JoinColumn(name = "album_id")
     private Album album;
 
@@ -41,11 +44,10 @@ public class Song {
         this.title = title;
     }
 
-    public Song(String title, int releaseYear, Album album, boolean isFavorite) {
+    public Song(String title, Album album) {
         this.title = title;
-        this.releaseYear = releaseYear;
+        this.releaseYear = album.getReleaseYear();
         this.album = album;
-        this.isFavorite = isFavorite;
     }
 
     public Long getId() {
