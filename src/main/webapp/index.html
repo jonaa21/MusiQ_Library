@@ -2,190 +2,91 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <albumTitle>Library Management</albumTitle>
-    <meta albumTitle="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <albumTitle>startpage</albumTitle>
+    <title>MusiQ Library</title>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
 </head>
-
 <body>
 
-<div class="w3-container w3-half w3-margin-top">
-
-        <p>
-            <input id="bookId" class="w3-input" type="hidden" style="width:90%">
-        </p>
-
-        <p>
-            <input id="albumTitle" class="w3-input" type="text" style="width:90%" required>
-            <label>Title</label></p>
-        <p>
-            <input id="author" class="w3-input" type="text" style="width:90%" required>
-            <label>Author</label></p>
-        <p>
-            <input id="isbn" class="w3-input" type="text" style="width:90%" required>
-            <label>ISBN</label></p>
-        <p>
-            <button id="btnSaveBook" onclick="saveBook()" class="w3-button w3-section w3-teal w3-ripple"> Add Book </button></p>
-
+<div class="container">
+    <div class="container-fluid">
+        <div class="col-4">
+            <table class="table">
+                <thead></thead>
+                <tbody>
+                <tr>
+                    <td>Home</td>
+                </tr>
+                <tr>
+                    <td>Song</td>
+                </tr>
+                <tr>
+                    <td>Artist</td>
+                </tr>
+                <tr>
+                    <td>Album</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <table class="table">
+                <tbody>
+                <tr class="col-6">
+                    <td id="songData">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<div id="bookData" class="w3-container">
-
-</div>
-
-<script>
-    clearInputFields();
-    loadBookList();
-
-    function loadBookList() {
-        let xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                let bookDataList = JSON.parse(this.responseText);
-                let bookList = ' <ul class="w3-ul w3-card-4"> ';
-
-                bookDataList.reverse();
-
-                for (let index = 0; index < bookDataList.length; index++) {
-                    bookList +=
-                    ' <li class="w3-bar"> ' +
-
-                    ' <button id= ' + bookDataList[index].id + ' onclick="editBook(this.id)" ' +
-                    ' class="w3-bar-item w3-button w3-small w3-right">Edit</button> ' +
-
-                    ' <button id=' + bookDataList[index].id + ' onclick="removeBook(this.id)" ' +
-                    ' class="w3-bar-item w3-button w3-small w3-right">Remove</button> ' +
-
-
-                    ' <img src="images/icons8-reading-48.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px"> ' +
-                    ' <div class="w3-bar-item"> ' +
-                        ' <span class="w3-large"> Title: ' +  bookDataList[index].albumTitle  + ' </span><br> ' +
-                        ' <span> Author: ' +  bookDataList[index].author  + ' </span> <br>' +
-
-                        ' <span> ISBN: ' +  bookDataList[index].isbn  + ' </span> ' +
-                    ' </div> ';
-                }
-                bookList += "</ul>";
-                document.getElementById("bookData").innerHTML = bookList;
-            }
-        };
-        xhttp.open("GET", "/restwithjersey/api/song/list", true);
-        xhttp.send();
-    }
-
-    function addBook() {
-        let song = {  "id" : null, "albumTitle" : document.getElementById("albumTitle").value, "author" : document.getElementById("author").value, "isbn" : document.getElementById("isbn").value }
-        var xmlhttp = new XMLHttpRequest();
-           xmlhttp.open("POST", "/restwithjersey/api/song/add", true);
-             xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState>3 && xmlhttp.status==200) { loadBookList(); clearInputFields();}
-            };
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-            xmlhttp.send(JSON.stringify(song));
-    }
-
-    function updateBook()
-    {
-        let song = {  "id" : document.getElementById("bookId").value, "albumTitle" : document.getElementById("albumTitle").value, "author" : document.getElementById("author").value, "isbn" : document.getElementById("isbn").value }
-        var xmlhttp = new XMLHttpRequest();
-           xmlhttp.open("POST", "/restwithjersey/api/song/update", true);
-             xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState>3 && xmlhttp.status==200) { loadBookList(); clearInputFields(); document.getElementById("btnSaveBook").innerHTML = "Add Book";}
-            };
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-            xmlhttp.send(JSON.stringify(song));
-    }
-
-    function clearInputFields()
-    {
-        document.getElementById("bookId").value = "";
-        document.getElementById("albumTitle").value = "";
-        document.getElementById("author").value = "";
-        document.getElementById("isbn").value = "";
-        document.getElementById("btnSaveBook").innerHTML = "Add Book";
-    }
-
-    function removeBook(bookId)
-    {
-    if ( confirm("Are you sure you want to delete this song?") ) {
-          deleteBook(bookId);
-        }
-    }
-
-    function deleteBook(bookId)
-    {
-       let song = {  "id" : bookId, "albumTitle" : document.getElementById("albumTitle").value, "author" : document.getElementById("author").value, "isbn" : document.getElementById("isbn").value }
-        var xhttp = new XMLHttpRequest();
-           xhttp.open("POST", "/restwithjersey/api/song/remove", true);
-             xhttp.onreadystatechange = function() {
-            if (xhttp.readyState>3 && xhttp.status==200) { loadBookList(); }
-            };
-            xhttp.setRequestHeader("Content-Type", "application/json");
-            xhttp.send(JSON.stringify(song));
-    }
-
-    function getBook(bookId)
-    {
-        let song = {  "id" : bookId, "albumTitle" : document.getElementById("albumTitle").value, "author" : document.getElementById("author").value, "isbn" : document.getElementById("isbn").value }
-
-        let xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-           if (xhttp.readyState>3 && xhttp.status==200) {
-                let foundSong = JSON.parse(this.responseText);
-
-                document.getElementById("bookId").value = foundSong.id;
-               document.getElementById("albumTitle").value = foundSong.albumTitle;
-               document.getElementById("author").value = foundSong.author;
-               document.getElementById("isbn").value = foundSong.isbn;
-
-               document.getElementById("btnSaveBook").innerHTML = "Update Book";
-            }
-        };
-        xhttp.open("POST", "/restwithjersey/api/song/getBook", true);
-           xhttp.setRequestHeader("Content-Type", "application/json");
-            xhttp.send(JSON.stringify(song));
-    }
-
-    function editBook(bookId)
-    {
-       getBook(bookId);
-    }
-
-    function saveBook()
-    {
-        if(validateForm())
-        {
-            if(document.getElementById("btnSaveBook").innerHTML == 'Add Book')
-            {
-                addBook();
-            }
-            else
-            {
-                updateBook();
-            }
-        }
-    }
-
-    function validateForm()
-    {
-        let pass = true;
-        let albumTitle = document.getElementById("albumTitle").value;
-        let author = document.getElementById("author").value;
-        let isbn = document.getElementById("isbn").value;
-
-        if (albumTitle == null || albumTitle == "", author == null || author == "", isbn == null || isbn == "")
-        {
-            alert("Please fill in all the fields.");
-            pass = false;
-        }
-
-        return pass;
-    }
-
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--<meta charset="UTF-8">-->
+<!--<title>Library Management</title>-->
+<!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+<!--<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">-->
+<!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">-->
+<!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>-->
+<!--<title>startpage</title>-->
+<!--</head>-->
+
+<!--<body>-->
+
+<!--<div class="w3-container w3-half w3-margin-top">-->
+
+<!--<p>-->
+<!--<input id="bookId" class="w3-input" type="hidden" style="width:90%">-->
+<!--</p>-->
+
+<!--<p>-->
+<!--<input id="name" class="w3-input" type="text" style="width:90%" required>-->
+<!--<label>Title</label></p>-->
+<!--<p>-->
+<!--<input id="author" class="w3-input" type="text" style="width:90%" required>-->
+<!--<label>Author</label></p>-->
+<!--<p>-->
+<!--<input id="isbn" class="w3-input" type="text" style="width:90%" required>-->
+<!--<label>ISBN</label></p>-->
+<!--<p>-->
+<!--<button id="btnSaveBook" onclick="saveBook()" class="w3-button w3-section w3-teal w3-ripple"> Add Book </button></p>-->
+
+<!--</div>-->
+
+<!--<div id="bookData" class="w3-container">-->
+
+<!--</div>-->
+<!--<script src="./app.js"></script>-->
+<!--</body>-->
+<!--</html>-->
